@@ -1,8 +1,8 @@
 set :application,     "soundboss"
 set :repository,      "https://github.com/dkln/soundboss.git"
-set :main_server,     "soundboss.fixalist.nl"
-set :user,            "soundboss"
-set :deploy_to,       '/home/soundboss/soundboss/'
+set :main_server,     "hyperion"
+set :user,            "nomaster"
+set :deploy_to,       '/home/nomaster/soundboss/'
 set :deploy_via,      :remote_cache
 set :use_sudo,        false
 set :thin_config,     'config/thin.yml'
