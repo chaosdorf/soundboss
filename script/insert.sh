@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/bash 
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
 DIR=$1
 rm files.txt
-for FILE in $(ls -1 $DIR);
+for FILE in $DIR/*;
 do
 	filename=$(basename "$FILE")
 	filename="${filename%.*}"
@@ -11,15 +11,16 @@ do
 	echo "<li data-file=$name>$filename</li>" >>files.txt
 done
 
-cd $DIR
-for FILE in $(ls -1);
+for FILE in $DIR/*;
 do
-	mv -v "$FILE" `echo $FILE | tr ' ' '_' | tr -d '[{}(),\!]' | tr -d "\'" | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'`
+	filename=$(basename "$FILE")
+	
+	mv -v "$DIR/$filename" $DIR/`echo "$filename" | tr ' ' '_' | tr -d '[{}(),\!]' | tr -d "\'" | tr '[A-Z]' '[a-z]' | sed 's/_-_/_/g'`
 	
 done
-for FILE in $(ls -1);
+for FILE in $DIR/*;
 do
 	
-	/home/bediko/soundboss/script/convert $FILE
+	"$(dirname "$0")"/convert $FILE
 done
 IFS=$SAVEIFS
