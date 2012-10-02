@@ -1,37 +1,21 @@
+require 'bundler/capistrano'
+
 set :application,     "soundboss"
-set :repository,      "https://github.com/dkln/soundboss.git"
-set :main_server,     "hyperion"
-set :user,            "nomaster"
-set :deploy_to,       '/home/nomaster/soundboss/'
+set :deploy_to,       '/srv/http/soundboss/'
 set :deploy_via,      :remote_cache
-set :use_sudo,        false
-set :thin_config,     'config/thin.yml'
-set :branch,          'master'
-set :rvm_ruby_string, '1.9.3-p125@soundboss'
-set :rvm_type,        :system
-set :keep_releases,   5
-
+set :main_server,     "hyperion.chaosdorf.dn42"
+set :repository,      "https://github.com/chaosdorf/soundboss.git"
 set :scm, :git
-# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+set :use_sudo,        false
+set :user,            "http"
 
-server "#{main_server}", :web, :app, :db, :primary => true
-
-namespace :rvm do
-  task :trust_rvmrc do
-    run "cd #{release_path}; rvm rvmrc trust #{release_path}"
-  end
-end
+role :app, "hyperion.chaosdorf.dn42"
 
 namespace :deploy do
-  desc "Restart the servers"
   task :restart do
+    run "touch #{release_path}/tmp/restart.txt"
     run "cd #{release_path}; kill `ps -u #{user}|awk '/ruby/{print $1}'` || echo 'nothing to kill'"
     run "screen -wipe || echo 'no screens to wipe'"
     run "cd #{release_path}; screen -AmdS websocket bundle exec ruby server.rb"
-    run "touch #{release_path}/tmp/restart.txt"
   end
-
 end
-
-after "deploy:update_code", "rvm:trust_rvmrc"
-after "deploy", "deploy:cleanup"
